@@ -1,0 +1,1 @@
+from logical_interpreter.logical_interpreter.log_parser import parse
