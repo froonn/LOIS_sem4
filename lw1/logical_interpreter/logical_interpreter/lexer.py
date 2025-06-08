@@ -44,10 +44,10 @@ def lex(characters: str, token_patterns: List[Tuple[str, Optional[str]]]) -> Lis
                 continue
 
             if pat == '[VAR]':
-                if characters[pos].isalpha() or characters[pos] == '_':
+                if characters[pos].isalpha():
                     start = pos
                     pos += 1
-                    while pos < length and (characters[pos].isalnum() or characters[pos] == '_'):
+                    while pos < length and characters[pos].isalnum():
                         pos += 1
                     tokens.append((characters[start:pos], tag))
                     match_found = True

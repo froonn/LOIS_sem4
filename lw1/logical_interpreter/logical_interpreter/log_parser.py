@@ -10,7 +10,8 @@
 - Логические основы интеллектуальных систем. Практикум : учебно - метод. пособие / В. В. Голенков [и др.]. – Минск : БГУИР, 2011. – 70 с. : ил.
 """
 
-from typing import Optional, List, Tuple
+from typing import Optional
+from itertools import product
 
 from logical_interpreter.logical_interpreter.log_ast import *
 from logical_interpreter.logical_interpreter.log_lexer import log_lex
@@ -25,7 +26,7 @@ class LogicalFormula:
         vars (set[str]): The set of variables in the logical formula.
     """
 
-    def __init__(self, ast: Expr, variables: list[str]) -> None:
+    def __init__(self, ast: Expr, variables: set[str]) -> None:
         """
         Initializes a LogicalFormula instance.
 
@@ -64,7 +65,6 @@ class LogicalFormula:
         if self.vars != other.vars:
             return False
 
-        from itertools import product
         for values in product([0, 1], repeat=len(self.vars)):
             env = dict(zip(self.vars, values))
             if self(env) != other(env):
@@ -180,7 +180,7 @@ class Parser:
 
         if not self.match('LPAREN'):
             raise SyntaxError('Expected an atomic expression (variable/constant) or '
-                              'an opening parenthesis for an operation (e.g., (A&B) or (!A)).')
+                              'an opening parenthesis for an operation (e.g., (A/\\B) or (!A)).')
 
         if self.pos < len(self.tokens) and self.tokens[self.pos][1] == 'NOT':
             self.pos += 1
@@ -190,7 +190,6 @@ class Parser:
             return Not(operand)
         else:
             inner_expr = self.expression()
-
             op_tag = self.peek_binary_op()
 
             if op_tag:
@@ -198,7 +197,7 @@ class Parser:
                 right_operand = self.expression()
 
                 if not self.match('RPAREN'):
-                    raise SyntaxError('Expected closing parenthesis `)` after binary operation (e.g., (A&B)).')
+                    raise SyntaxError('Expected closing parenthesis `)` after binary operation (e.g., (A/\\B)).')
 
                 if op_tag == 'AND':
                     return And(inner_expr, right_operand)
