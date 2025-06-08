@@ -1,21 +1,31 @@
-import re
+"""
+Выполнил студент группы 321701:
+- Мотолянец Кирилл Андреевич
+Вариант 6
+
+Лексический анализатор, который токенизирует строку на основе предопределенных шаблонов токенов.
+23.05.2025
+
+Источники:
+- Логические основы интеллектуальных систем. Практикум : учебно - метод. пособие / В. В. Голенков [и др.]. – Минск : БГУИР, 2011. – 70 с. : ил.
+"""
+
 from typing import List, Tuple
 from logical_interpreter.logical_interpreter import lexer
 
-# Compile all regex patterns before the loop for efficiency
-token_patterns: List[Tuple[re.Pattern, str]] = [(re.compile(pattern), tag) for pattern, tag in [
-    (r'\s+',          None),  # Пробелы
-    (r'\&',           'AND'),
-    (r'\|',           'OR'),
-    (r'\!',           'NOT'),
-    (r'\->',          'IMPLIES'),
-    (r'\~',           'EQUIV'),
-    (r'\(',           'LPAREN'),
-    (r'\)',           'RPAREN'),
-    (r'[a-zA-Z_]\w*', 'VAR'),
-    (r'0',            'FALSE'),
-    (r'1',            'TRUE'),
-]]
+token_patterns = [
+    ('->',     'IMPLIES'),
+    ('/\\',    'AND'),
+    ('\\/',    'OR'),
+    ('!',      'NOT'),
+    ('~',      'EQUIV'),
+    ('(',      'LPAREN'),
+    (')',      'RPAREN'),
+    ('0',      'FALSE'),
+    ('1',      'TRUE'),
+    ('[VAR]',  'VAR'),
+    ('[WS]',    None),
+]
 
 
 def log_lex(characters: str) -> List[Tuple[str, str]]:

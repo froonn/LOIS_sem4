@@ -1,6 +1,19 @@
+"""
+Выполнил студент группы 321701:
+- Мотолянец Кирилл Андреевич
+Вариант 6
+
+Класс тестов для проверки корректности работы абстрактного синтаксического дерева (AST) логических формул.
+23.05.2025
+
+Источники:
+- Логические основы интеллектуальных систем. Практикум : учебно - метод. пособие / В. В. Голенков [и др.]. – Минск : БГУИР, 2011. – 70 с. : ил.
+"""
+
+
 import unittest
 
-from logical_interpreter.logical_interpreter.log_ast import Var, And, Or, Not, Implies, Equiv
+from logical_interpreter.logical_interpreter.log_ast import *
 
 class TestLogicalOperations(unittest.TestCase):
     def test_variable_evaluation(self):

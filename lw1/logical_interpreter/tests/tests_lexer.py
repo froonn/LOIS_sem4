@@ -1,29 +1,44 @@
+"""
+Выполнил студент группы 321701:
+- Мотолянец Кирилл Андреевич
+Вариант 6
+
+Класс тестов для проверки корректности работы лексера.
+23.05.2025
+
+Источники:
+- Логические основы интеллектуальных систем. Практикум : учебно - метод. пособие / В. В. Голенков [и др.]. – Минск : БГУИР, 2011. – 70 с. : ил.
+"""
+
 import unittest
-import re
 
 from logical_interpreter.logical_interpreter.lexer import lex
+
 
 class TestLexer(unittest.TestCase):
     def setUp(self):
         self.token_patterns = [
-            (re.compile(r'\s+'), None),  # Whitespace
-            (re.compile(r'\('), 'LPAREN'),
-            (re.compile(r'\)'), 'RPAREN'),
-            (re.compile(r'~'), 'NOT'),
-            (re.compile(r'&'), 'AND'),
-            (re.compile(r'\|'), 'OR'),
-            (re.compile(r'->'), 'IMPLIES'),
-            (re.compile(r'<->'), 'EQUIV'),
-            (re.compile(r'[a-zA-Z_]\w*'), 'VAR')
+            ('->', 'IMPLIES'),
+            ('/\\', 'AND'),
+            ('\\/', 'OR'),
+            ('!', 'NOT'),
+            ('~', 'EQUIV'),
+            ('(', 'LPAREN'),
+            (')', 'RPAREN'),
+            ('0', 'FALSE'),
+            ('1', 'TRUE'),
+            ('[VAR]', 'VAR'),
+            ('[WS]', None),
         ]
 
     def test_valid_input(self):
-        characters = "(a & b) | ~c"
-        expected_tokens = [('(', 'LPAREN'), ('a', 'VAR'), ('&', 'AND'), ('b', 'VAR'), (')', 'RPAREN'), ('|', 'OR'), ('~', 'NOT'), ('c', 'VAR')]
+        characters = "(a /\\ b) \\/ !c"
+        expected_tokens = [('(', 'LPAREN'), ('a', 'VAR'), ('/\\', 'AND'), ('b', 'VAR'), (')', 'RPAREN'), ('\\/', 'OR'),
+                           ('!', 'NOT'), ('c', 'VAR')]
         self.assertEqual(lex(characters, self.token_patterns), expected_tokens)
 
     def test_invalid_character(self):
-        characters = "(a & b) | ~c$"
+        characters = "(a /\\ b) \\/ ~c$"
         with self.assertRaises(SyntaxError):
             lex(characters, self.token_patterns)
 
@@ -38,9 +53,12 @@ class TestLexer(unittest.TestCase):
         self.assertEqual(lex(characters, self.token_patterns), expected_tokens)
 
     def test_complex_expression(self):
-        characters = "(a <-> b) & ~(c -> d)"
-        expected_tokens = [('(', 'LPAREN'), ('a', 'VAR'), ('<->', 'EQUIV'), ('b', 'VAR'), (')', 'RPAREN'), ('&', 'AND'), ('~', 'NOT'), ('(', 'LPAREN'), ('c', 'VAR'), ('->', 'IMPLIES'), ('d', 'VAR'), (')', 'RPAREN')]
+        characters = "(a ~ b) /\\ !(c -> d)"
+        expected_tokens = [('(', 'LPAREN'), ('a', 'VAR'), ('~', 'EQUIV'), ('b', 'VAR'), (')', 'RPAREN'), ('/\\', 'AND'),
+                           ('!', 'NOT'), ('(', 'LPAREN'), ('c', 'VAR'), ('->', 'IMPLIES'), ('d', 'VAR'),
+                           (')', 'RPAREN')]
         self.assertEqual(lex(characters, self.token_patterns), expected_tokens)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,7 +1,21 @@
+"""
+Выполнил студент группы 321701:
+- Мотолянец Кирилл Андреевич
+Вариант 6
+
+Классы для представления формул сокращенного языка логики высказываний в виде абстрактного синтаксического дерева (AST).
+23.05.2025
+
+Источники:
+- Логические основы интеллектуальных систем. Практикум : учебно - метод. пособие / В. В. Голенков [и др.]. – Минск : БГУИР, 2011. – 70 с. : ил.
+"""
+
+
 class Expr:
     """
     Base class for all expressions in the logical formula.
     """
+
     def eval(self, env: dict[str, bool]) -> bool:
         """
         Evaluate the expression in the given environment.
@@ -14,10 +28,12 @@ class Expr:
         """
         pass
 
+
 class ConstTrue(Expr):
     """
     Class representing a constant logical value of True in a logical formula.
     """
+
     def __repr__(self):
         """
         Returns a string representation of the constant True.
@@ -44,6 +60,7 @@ class ConstFalse(Expr):
     """
     Class representing a constant logical value of False in a logical formula.
     """
+
     def __repr__(self):
         """
         Returns a string representation of the constant False.
@@ -70,6 +87,7 @@ class Var(Expr):
     """
     Class representing a variable in the logical formula.
     """
+
     def __init__(self, name: str) -> None:
         """
         Initialize a variable with the given name.
@@ -100,17 +118,19 @@ class Var(Expr):
         """
         return env[self.name]
 
+
 class And(Expr):
     """
     Class representing a logical AND operation.
     """
-    def __init__(self, left: Var, right: Var) -> None:
+
+    def __init__(self, left: Expr, right: Expr) -> None:
         """
         Initialize an AND operation with the given left and right operands.
 
         Args:
-            left (Var): The left operand.
-            right (Var): The right operand.
+            left (Expr): The left operand.
+            right (Expr): The right operand.
         """
         self.left = left
         self.right = right
@@ -136,17 +156,19 @@ class And(Expr):
         """
         return self.left.eval(env) and self.right.eval(env)
 
+
 class Or(Expr):
     """
     Class representing a logical OR operation.
     """
-    def __init__(self, left: Var, right: Var) -> None:
+
+    def __init__(self, left: Expr, right: Expr) -> None:
         """
         Initialize an OR operation with the given left and right operands.
 
         Args:
-            left (Var): The left operand.
-            right (Var): The right operand.
+            left (Expr): The left operand.
+            right (Expr): The right operand.
         """
         self.left = left
         self.right = right
@@ -172,51 +194,19 @@ class Or(Expr):
         """
         return self.left.eval(env) or self.right.eval(env)
 
-class Not(Expr):
-    """
-    Class representing a logical NOT operation.
-    """
-    def __init__(self, operand: Var) -> None:
-        """
-        Initialize a NOT operation with the given operand.
-
-        Args:
-            operand (Var): The operand.
-        """
-        self.operand = operand
-
-    def __repr__(self) -> str:
-        """
-        Return a string representation of the NOT operation.
-
-        Returns:
-            str: The string representation of the NOT operation.
-        """
-        return f'Not({self.operand})'
-
-    def eval(self, env: dict[str, bool]) -> bool:
-        """
-        Evaluate the NOT operation in the given environment.
-
-        Args:
-            env (dict[str, bool]): A dictionary mapping variable names to their boolean values.
-
-        Returns:
-            bool: The result of the NOT operation.
-        """
-        return not self.operand.eval(env)
 
 class Implies(Expr):
     """
     Class representing a logical implication operation.
     """
-    def __init__(self, left: Var, right: Var) -> None:
+
+    def __init__(self, left: Expr, right: Expr) -> None:
         """
         Initialize an implication operation with the given left and right operands.
 
         Args:
-            left (Var): The left operand.
-            right (Var): The right operand.
+            left (Expr): The left operand.
+            right (Expr): The right operand.
         """
         self.left = left
         self.right = right
@@ -242,17 +232,19 @@ class Implies(Expr):
         """
         return not self.left.eval(env) or self.right.eval(env)
 
+
 class Equiv(Expr):
     """
     Class representing a logical equivalence operation.
     """
-    def __init__(self, left: Var, right: Var) -> None:
+
+    def __init__(self, left: Expr, right: Expr) -> None:
         """
         Initialize an equivalence operation with the given left and right operands.
 
         Args:
-            left (Var): The left operand.
-            right (Var): The right operand.
+            left (Expr): The left operand.
+            right (Expr): The right operand.
         """
         self.left = left
         self.right = right
@@ -277,3 +269,39 @@ class Equiv(Expr):
             bool: The result of the equivalence operation.
         """
         return self.left.eval(env) == self.right.eval(env)
+
+
+class Not(Expr):
+    """
+    Class representing a logical NOT operation.
+    """
+
+    def __init__(self, operand: Expr) -> None:
+        """
+        Initialize a NOT operation with the given operand.
+
+        Args:
+            operand (Expr): The operand.
+        """
+        self.operand = operand
+
+    def __repr__(self) -> str:
+        """
+        Return a string representation of the NOT operation.
+
+        Returns:
+            str: The string representation of the NOT operation.
+        """
+        return f'Not({self.operand})'
+
+    def eval(self, env: dict[str, bool]) -> bool:
+        """
+        Evaluate the NOT operation in the given environment.
+
+        Args:
+            env (dict[str, bool]): A dictionary mapping variable names to their boolean values.
+
+        Returns:
+            bool: The result of the NOT operation.
+        """
+        return not self.operand.eval(env)
